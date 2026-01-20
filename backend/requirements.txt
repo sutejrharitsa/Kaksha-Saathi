@@ -15,7 +15,15 @@ requests
 
 # Validation
 pydantic
+python-jose
+requests
+python-dotenv
 email-validator
 
 # Local dev env loading (safe even on Render)
 python-dotenv
+
+reportlab        # PDF generation
+pillow           # if you process images
+APScheduler      # if you actually schedule jobs
+
