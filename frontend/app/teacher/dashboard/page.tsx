@@ -49,6 +49,7 @@ export default function TeacherDashboard() {
   const [submissionsTitle, setSubmissionsTitle] = useState("")
   const [submissions, setSubmissions] = useState<any[]>([])
 
+  
   // ---------------- POLLING (UNCHANGED) ----------------
   useEffect(() => {
     if (!token) {
@@ -300,8 +301,8 @@ export default function TeacherDashboard() {
             </div>
             <div className="p-6 grid grid-cols-1 gap-3">
               <div className="grid grid-cols-2 gap-3">
-                <Button variant="outline" disabled={!quizActive} onClick={() => openSubmissions("quiz")} className="h-12 border rounded-xl font-bold uppercase text-[9px] hover:bg-background">View Quiz</Button>
-                <Button variant="outline" disabled={!contestActive} onClick={() => openSubmissions("contest")} className="h-12 border rounded-xl font-bold uppercase text-[9px] hover:bg-background">View Contest</Button>
+                <Button variant="outline" disabled={!quizActive} onClick={() => openSubmissions("quiz")} className="h-12 border rounded-xl font-bold uppercase text-[9px] hover:bg-background">View Quiz Submissions</Button>
+                <Button variant="outline" disabled={!contestActive} onClick={() => openSubmissions("contest")} className="h-12 border rounded-xl font-bold uppercase text-[9px] hover:bg-background">View Contest Submissions</Button>
               </div>
               <div className="grid grid-cols-2 gap-3 pt-2 border-t border-black/5">
                 <Button variant="ghost" onClick={() => safeDelete("/quizzes/delete")} className="h-12 rounded-xl font-bold uppercase text-[9px] text-destructive hover:bg-destructive/5 hover:text-destructive">Delete Quiz</Button>
@@ -331,18 +332,18 @@ export default function TeacherDashboard() {
             <div className="flex-1 min-h-0 relative z-10">
               <ScrollArea className="h-full w-full p-6">
                 <div className="space-y-4 pb-4">
-                  {doubts.map((d) => (
-                    <div key={d.id} className="group p-5 bg-white/60 backdrop-blur-md rounded-[1.5rem] border border-white/60 hover:border-primary/30 hover:bg-white/80 transition-all flex justify-between items-start shadow-sm">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-[9px] font-bold text-primary uppercase">
+                    {doubts.map((d) => (
+                    <div key={d.id} className="group p-5 bg-white/60 backdrop-blur-md rounded-[1.5rem] border border-white/60 hover:border-primary/30 hover:bg-white/80 transition-all flex justify-between items-start gap-3 shadow-sm">
+                      <div className="space-y-2 flex-1 min-w-0">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-[9px] font-bold text-primary uppercase flex-shrink-0">
                             {d.student_name[0]}
                           </div>
-                          <p className="text-[10px] font-bold text-primary/70 uppercase tracking-wider">{d.student_name}</p>
+                          <p className="text-[10px] font-bold text-primary/70 uppercase tracking-wider truncate min-w-0">{d.student_name}</p>
                         </div>
-                        <p className="text-sm font-medium text-foreground/90 leading-relaxed pl-1">{d.content}</p>
+                        <p className="text-sm font-medium text-foreground/90 leading-relaxed pl-1 break-all">{d.content}</p>
                       </div>
-                      <Button variant="ghost" size="icon" onClick={() => safeDelete(`/doubts/${d.id}`)} className="text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"><Trash2 className="w-4 h-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => safeDelete(`/doubts/${d.id}`)} className="text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors flex-shrink-0"><Trash2 className="w-4 h-4" /></Button>
                     </div>
                   ))}
                   {doubts.length === 0 && (
@@ -414,6 +415,93 @@ export default function TeacherDashboard() {
           </div>
         </div>
       </div>
+              {/* SUBMISSIONS MODAL OVERLAY */}
+      {showSubmissions && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          {/* Backdrop with heavy blur */}
+          <div 
+            className="absolute inset-0 bg-background/60 backdrop-blur-xl animate-in fade-in duration-300" 
+            onClick={() => setShowSubmissions(false)} 
+          />
+          
+          {/* Modal Content */}
+          <div className="glass w-full max-w-2xl max-h-[85vh] rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden relative animate-in slide-in-from-bottom-8 duration-500">
+            
+            {/* Header */}
+            <div className="p-8 border-b border-white/40 flex justify-between items-center bg-white/40 backdrop-blur-md">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                  <Award className="w-6 h-6" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold tracking-tight text-foreground">{submissionsTitle}</h2>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">{submissions.length} Total Entries</p>
+                </div>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setShowSubmissions(false)}
+                className="rounded-xl hover:bg-destructive/10 hover:text-destructive transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </Button>
+            </div>
+
+            {/* List Area */}
+            <ScrollArea className="flex-1 px-8 py-4">
+              <div className="flex flex-col gap-3 py-4"> {/* Changed to flex-col for 'one below the other' */}
+                {submissions.length > 0 ? (
+                  submissions.map((sub, idx) => (
+                    <div 
+                      key={idx} 
+                      className="group p-5 bg-white/50 hover:bg-white/80 border border-white/60 hover:border-primary/30 rounded-2xl flex items-center justify-between transition-all duration-200"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary font-bold text-sm">
+                          {idx + 1}
+                        </div>
+                        <div>
+                          <p className="font-bold text-sm text-foreground uppercase tracking-tight">
+                            {sub.student_name || sub.username || "Anonymous Student"}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground font-medium">
+                            Submitted at {sub.timestamp ? new Date(sub.timestamp).toLocaleTimeString() : "Just now"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-6">
+                        <div className="text-right">
+                          <p className="text-[9px] uppercase font-black text-primary/40 tracking-tighter">Result</p>
+                          <p className="font-mono font-bold text-primary text-lg">
+                            {typeof sub.score === 'number' ? `${sub.score} pts` : "DONE"}
+                          </p>
+                        </div>
+                        <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                          <ChevronRight className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="h-64 flex flex-col items-center justify-center text-muted-foreground/30 gap-4">
+                    <AlertCircle className="w-16 h-16 stroke-[1]" />
+                    <p className="font-bold uppercase tracking-[0.2em] text-[10px]">Awaiting first submission...</p>
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-white/40 bg-white/20 text-center">
+              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.3em]">
+                End of List
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
