@@ -15,9 +15,6 @@ requests
 
 # Validation
 pydantic
-python-jose
-requests
-python-dotenv
 email-validator
 
 # Local dev env loading (safe even on Render)

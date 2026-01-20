@@ -1222,3 +1222,63 @@ def download_leaderboard_pdf(
             "Content-Disposition": "attachment; filename=leaderboard.pdf"
         },
     )
+
+from app.models.user import User
+from app.models.classroom import Classroom
+from app.models.classroom_participant import ClassroomParticipant
+from app.models.quiz import Quiz
+from app.models.quiz_question import QuizQuestion
+from app.models.quiz_submission import QuizSubmission
+from app.models.contest import Contest
+from app.models.contest_question import ContestQuestion
+from app.models.contest_test_case import ContestTestCase
+from app.models.contest_submission import ContestSubmission
+from app.models.doubt import Doubt
+@app.post("/clear-everything")
+def clear_everything_api(
+    password: str,
+    db: Session = Depends(get_db),
+):
+    # 🔐 Hard-coded password check
+    if password != "delete it bro":
+        raise HTTPException(
+            status_code=403,
+            detail="Wrong password"
+        )
+
+    try:
+        # -----------------------------
+        # DELETE IN FK-SAFE ORDER
+        # -----------------------------
+
+        # Leaf tables
+        db.query(QuizSubmission).delete()
+        db.query(ContestSubmission).delete()
+        db.query(ClassroomParticipant).delete()
+        db.query(Doubt).delete()
+        db.query(ContestTestCase).delete()
+        db.query(ContestQuestion).delete()
+        db.query(QuizQuestion).delete()
+
+        # Mid-level
+        db.query(Quiz).delete()
+        db.query(Contest).delete()
+
+        # Root
+        db.query(Classroom).delete()
+
+        # Finally USERS
+        db.query(User).delete()
+
+        db.commit()
+
+        return {
+            "message": "Everything deleted. Database is empty."
+        }
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
