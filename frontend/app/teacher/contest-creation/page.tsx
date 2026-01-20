@@ -29,7 +29,9 @@ import {
   Loader2,
 } from "lucide-react"
 
-const BACKEND_URL = "http://localhost:8000"
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL;
+
 
 interface TestCase { id: number; input: string; output: string }
 interface ContestTemplateSummary { id: number; title: string }

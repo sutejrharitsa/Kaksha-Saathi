@@ -8,7 +8,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { ChevronLeft, ChevronRight, Send, CheckCircle, Trophy, Clock, ArrowLeft, Award, CheckCircle2, Cpu } from "lucide-react"
 
-const BACKEND_URL = "http://localhost:8000"
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL;
+
 
 type QuizQuestion = {
   id: number

@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { BookOpen, Lock, Sparkles, Users, Code, FileQuestion, ArrowRight, Loader2, Fingerprint } from "lucide-react"
 
-const BACKEND_URL = "http://localhost:8000"
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL;
+
 
 export default function TeacherClassSelectionPage() {
   const router = useRouter()

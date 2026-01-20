@@ -9,7 +9,10 @@ import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { GraduationCap, ArrowRight, User, Mail, Fingerprint, ShieldAlert, Loader2 } from "lucide-react"
 
-const BACKEND_URL = "http://localhost:8000"
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL;
+console.log("Backend URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
+
 
 export default function LoginPage() {
   const router = useRouter()

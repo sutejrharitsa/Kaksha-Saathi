@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Users, ArrowRight, Lock, Hash, Loader2, ShieldCheck } from "lucide-react"
 
-const BACKEND_URL = "http://localhost:8000"
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL;
+
 
 export default function StudentJoinPage() {
   const router = useRouter()

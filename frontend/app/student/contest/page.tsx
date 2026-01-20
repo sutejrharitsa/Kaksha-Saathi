@@ -28,7 +28,9 @@ import {
   Code2
 } from "lucide-react"
 
-const BACKEND_URL = "http://localhost:8000"
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL;
+
 
 const LANGUAGE_MAP: Record<string, number> = {
   cpp: 54,

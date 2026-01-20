@@ -29,7 +29,9 @@ import {
   ClipboardList,
 } from "lucide-react"
 
-const BACKEND_URL = "http://localhost:8000"
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL;
+
 
 interface QuizTemplate { id: number; title: string }
 interface Question {
