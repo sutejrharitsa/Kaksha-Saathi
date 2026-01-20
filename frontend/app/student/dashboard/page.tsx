@@ -208,35 +208,54 @@ export default function StudentDashboard() {
       <div className="max-w-[1440px] mx-auto p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Doubts Column */}
-        <div className="lg:col-span-4 flex flex-col h-[calc(100vh-12rem)]">
+        {/* LEFT COLUMN: DOUBTS (Force Enveloping) */}
+        <div className="lg:col-span-4 flex flex-col h-[calc(100vh-12rem)] min-w-0">
           <div className="flex items-center gap-2 mb-4 px-2">
             <MessageCircle className="w-4 h-4 text-indigo-500" />
-            <h2 className="text-xs font-black uppercase tracking-widest text-black/40">Doubts</h2>
+            <h2 className="text-xs font-black uppercase tracking-widest text-black/40">Student Queries</h2>
           </div>
-          <Card className="flex-1 bg-white border-none shadow-xl rounded-[2rem] overflow-hidden flex flex-col">
+          <Card className="flex-1 bg-white border-none shadow-xl rounded-[2.5rem] overflow-hidden flex flex-col">
             <ScrollArea className="flex-1 p-6 bg-[#FBFBFC]">
-              <div className="space-y-4">
+              {/* CRITICAL FIX: overflow-x-hidden on this wrapper prevents 
+                  the horizontal scroll of death.
+              */}
+              <div className="flex flex-col gap-4 w-full max-w-full overflow-x-hidden">
                 {doubts.map((d, i) => (
-                  <div key={i} className="bg-white p-5 rounded-2xl border border-black/[0.03] shadow-sm">
-                    <div className="flex items-center gap-2 mb-2 font-bold text-[10px] text-indigo-600 uppercase tracking-tight">
-                      {d.student_name}
+                  <div 
+                    key={i} 
+                    className="bg-white p-5 rounded-2xl border border-black/[0.05] shadow-sm flex flex-col w-full min-w-0"
+                  >
+                    <div className="flex items-center gap-2 mb-2 font-bold text-[10px] text-indigo-600 uppercase tracking-widest flex-shrink-0">
+                      <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                      <span className="truncate">{d.student_name}</span>
                     </div>
-                    <p className="text-sm font-medium text-black/80">{d.content}</p>
+                    
+                    {/* THE ENVELOPE FIX:
+                        1. break-all: Handles the "hiiiiiii..." case by cutting the word at any letter.
+                        2. w-full + block: Ensures it doesn't try to sit in a ghost row.
+                    */}
+                    <p className="text-sm font-medium text-black/80 leading-relaxed break-all whitespace-pre-wrap block w-full">
+                      {d.content}
+                    </p>
                   </div>
                 ))}
               </div>
             </ScrollArea>
-            <div className="p-6 bg-white border-t">
+            
+            <div className="p-6 bg-white border-t border-black/5 flex-shrink-0">
               <div className="relative">
                 <Input
-                  placeholder="Type your doubt here..."
+                  placeholder="Ask a question..."
                   value={newDoubt}
                   onChange={(e) => setNewDoubt(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && submitDoubt()}
-                  className="h-14 bg-[#F4F4F7] border-none rounded-xl pr-14 focus-visible:ring-1 focus-visible:ring-black"
+                  className="h-14 bg-[#F4F4F7] border-none rounded-xl pr-14 focus-visible:ring-1 focus-visible:ring-black/10"
                 />
-                <button onClick={submitDoubt} className="absolute right-4 top-4 w-6 h-6 bg-black rounded-lg flex items-center justify-center">
-                  <Send className="w-3 h-3 text-white" />
+                <button 
+                  onClick={submitDoubt} 
+                  className="absolute right-3 top-3 w-8 h-8 bg-black text-white rounded-lg flex items-center justify-center hover:scale-105 transition-transform"
+                >
+                  <Send className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
